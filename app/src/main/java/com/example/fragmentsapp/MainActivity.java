@@ -6,11 +6,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
+    String ROOT_FRAGMENT_TAG = "root_fragment";
     Button btnFragA, btnFragB, btnFragC;
 
     @Override
@@ -49,11 +51,26 @@ public class MainActivity extends AppCompatActivity {
     public void loadFrag(Fragment fragment, int flag){
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        if(flag == 0)
-            ft.add(R.id.container, fragment);
-        else
-            ft.replace(R.id.container, fragment);
-        ft.commit();
 
+        Bundle bundle = new Bundle();
+        bundle.putString("Arg1", "Raman");
+        bundle.putInt("Arg2", 7);
+
+        fragment.setArguments(bundle);
+
+        if(flag == 0) {
+            ft.add(R.id.container, fragment);
+            fm.popBackStack(ROOT_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            ft.addToBackStack(ROOT_FRAGMENT_TAG);
+        }else {
+            ft.replace(R.id.container, fragment);
+            ft.addToBackStack(null);
+        }
+        ft.commit();
     }
+
+    public void CallFromFrangment(){
+        Log.d("inAct","fromFragment");
+    }
+
 }
